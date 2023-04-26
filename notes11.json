@@ -1,6 +1,9 @@
-[
-   [
-      1,
-      "Название заметки: Заметка MARVEL 1 \n    Текст заметки: \n1. Steve Rogers(Chris Evans)\n2. Bruce Wayne(Christian Bale)\n3. Tony Stark(Robert Downey J.)\n\n    Дата создания: 2023-04-24 16:04:16\n    Дата изменения: 2023-04-24 16:04:16\n"
-   ]
-]
+{
+  "notebook": [
+    "{\n  \"Название заметки:\": \"Marvel\",\n  \"Текст заметки:\": \"Iron Man not\\n\",\n  \"Дата создания:\": \"2023-04-26 00:03:42\",\n  \"Дата изменения:\": \"2023-04-26 00:03:42\"\n}",
+    "{\n  \"Название заметки:\": \"Marvel 2\",\n  \"Текст заметки:\": \"Spider Man \\nGreen Arrow \\n\",\n  \"Дата создания:\": \"2023-04-26 00:05:21\",\n  \"Дата изменения:\": \"2023-04-26 00:05:21\"\n}",
+    "{\n  \"Название заметки:\": \"Marvel Heroes\",\n  \"Текст заметки:\": \"1.Tony Stark aka Iron Man (Robert Downey Jr.)\\n2.Steve Rogers aka Captain America (Chris Evans)\\n3.Tor (Chris Hewsworth)\\n\",\n  \"Дата создания:\": \"2023-04-26 15:12:53\",\n  \"Дата изменения:\": \"2023-04-26 15:12:53\"\n}",
+    "{\n  \"Название заметки:\": \"Marvel heroes 2\",\n  \"Текст заметки:\": \"3.Peter Parker aka SpiderMan (Tom Holland, Tobey Macguire)\\n4.Natasha Romanoff aka BlackWidow (Scarlett Johansson)\\n5.Clint Barton aka HawkEye (Jeremy Renner)\\n\",\n  \"Дата создания:\": \"2023-04-26 16:14:29\",\n  \"Дата изменения:\": \"2023-04-26 16:14:29\"\n}",
+    "{\n  \"Название заметки:\": \"dzfasdf\",\n  \"Текст заметки:\": \"asdfasdf\\nadsfasdf\\n\",\n  \"Дата создания:\": \"2023-04-26 19:03:48\",\n  \"Дата изменения:\": \"2023-04-26 19:03:48\"\n}"
+  ]
+}

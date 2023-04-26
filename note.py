@@ -1,6 +1,5 @@
 import datetime
 
-
 class Note:
     # note = {}
 
@@ -55,7 +54,13 @@ class Note:
 
 
     def __str__(self):
-        return str(self.note)
+        txt = ""
+        for k,v in self.note.items():
+            txt = txt + k + ": " + v + "\n"
+            
+        return txt
+        # return str(self.note)
+    
 #         return f"Название заметки:{self.header} \n\
 # Текст заметки: \n{self.text}\n\
 # Дата создания: {self.created}\n\

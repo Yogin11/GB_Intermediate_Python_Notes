@@ -1,12 +1,16 @@
+from tabulate import *
+
+from note import Note
+
 class Menu:
     mainMenu = {
-        "1": "Show all notes",
-        "2": "Add note",
-        "3": "Edit note",
-        "4": "Delete note",
-        "5": "Save notes",
-        "6": "Import notes",
-        "10": "Exit"
+        "1": "Показать все заметки",
+        "2": "Добавить заметку",
+        "3": "Изменить заметку",
+        "4": "Удалить заметку",
+        "5": "Сохранить заметки в файл",
+        "6": "Загрузить заметки из файла",
+        "10": "Выход"
     }
 
     def show_menu_view(self):
@@ -29,15 +33,15 @@ class Menu:
                 break
             txt = txt + inp + "\n"
         return hr, txt
-
+    # def convert_set(set): 
+    #      return [*set, ] 
+     
     def list_notes_view(self, listnotes: list):
         n=0
-        for note in listnotes:
-            n+=1
-            # print(f" Заметка №{n} \n {note}")
-            print(f" Заметка №{n} \n")
-            for k in note:
-                print(k,note[k])
+        # print ("strnotes = ",[*listnotes[0].note.keys()])
+        # lst = [*listnotes[0].note.keys()]
+        if listnotes:
+            print(tabulate(listnotes,headers="keys", tablefmt="grid", colalign=("left"),stralign='left', maxcolwidths=[None,None, 12,12]))  # or grid or pretty              
 
     def confirm_msg_view(self):
         print("Операция выполнена успешно!")
