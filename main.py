@@ -6,6 +6,7 @@ from consolemenu.items import *
 
 ntbook = Notebook()
 ntbook.start()
+# ntbook.import_notes()
 
 # menu = ConsoleMenu("This is a menu!", "It has a subtitle too!",clear_screen=False)
 # command_item = CommandItem("Run a console command", "cat hello.txt")
