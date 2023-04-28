@@ -1,7 +1,6 @@
 from tabulate import *
 
-from note import Note
-
+# from note import Note
 
 class Menu:
     main_Menu = {
@@ -45,17 +44,15 @@ class Menu:
 
     def show_menu_view(self, obj: dict):
         while True:
-            for k,v in obj.items():
-                # print(type(f))
+            for k, v in obj.items():
                 if k == "0":
                     print(v)
                 else:
-                    print(k, v)
+                    print(" ", k, " - ", v)
             choice = input("Выберите пункт: ")
-            if choice in obj and choice != "0":  # and choice != "10":
+            if choice in obj and choice != "0":
                 return choice
-            # elif choice == "10":
-            #     break
+
             else:
                 print("Неправильный ввод. Попробуйте еще раз.")
 
@@ -84,21 +81,18 @@ class Menu:
             txt = txt + inp + "\n"
         return hr, txt
 
-    def list_notes_view(self, listnotes: list, width=None):
-        if width is None:
+    def list_notes_view(self, listnotes: list, var=""):
+
+        if var == "full":
+            width = [3, None, None, 10, 10]
+        else:
             width = [3, None, 10, 10]
         if listnotes:
-            print(tabulate(listnotes, headers="keys", tablefmt="grid", colalign=("left"), stralign='left',
+            print(tabulate(listnotes, headers="keys", tablefmt="heavy_grid", colalign=("center","left","left",),
                            maxcolwidths=width))  # or grid or pretty
 
     def confirm_msg_view(self):
         print("Операция выполнена успешно!")
 
-    def show_sort_choice_view(self):
-        for f in self.sort_Menu:
-            print(f, self.sort_Menu[f])
-        choice = input("Выберите критерий сортировки заметок: ")
-        if choice in self.sort_Menu:
-            return choice
-        else:
-            print("Неправильный ввод. Попробуйте еще раз.")
+    def non_confirm_msg_view(self):
+        print("Операция не выполнена")

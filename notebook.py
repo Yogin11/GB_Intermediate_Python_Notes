@@ -1,27 +1,20 @@
-# from re import Pattern
-# import re
 import os
 import platform
 import copy
-
 from note import *
 import json
 from menu import *
 
 
 class Notebook:
-    dict = {}
-
     def __init__(self):
-        self.notes = []
+        # self.notes = []
         self.notesobj = []
         self.n = 0
         self.menu = Menu()
-        self.dict = {"notebook": self.notes}
         self.import_notes()
 
     def start(self):
-        # self.import_notes()
         choice = self.menu.show_menu_view(self.menu.main_Menu)
         self.clr_scr()
         match choice:
@@ -34,16 +27,15 @@ class Notebook:
             case "10":
                 exit()
 
-        self.start()
         input("↩")
-        # self.clr_scr()
+        self.start()
 
     def notes_show(self):
         choice = self.menu.show_menu_view(self.menu.notes_show_Menu)
         self.clr_scr()
         match choice:
             case "1":
-                self.show_notes_brief(self.notes)
+                self.show_notes_brief(self.dict_convert(self.notesobj))
             case "2":
                 self.show_notes_full()
             case "3":
@@ -52,9 +44,9 @@ class Notebook:
                 self.show_note()
             case "10":
                 self.start()
-
         input("↩")
         self.clr_scr()
+        self.notes_show()
 
     def note_actions(self):
         choice = self.menu.show_menu_view(self.menu.notes_action_Menu)
@@ -71,6 +63,7 @@ class Notebook:
                 self.start()
         input("↩")
         self.clr_scr()
+        self.note_actions()
 
     def notes_exim(self):
         choice = self.menu.show_menu_view(self.menu.notes_exim_Menu)
@@ -80,8 +73,11 @@ class Notebook:
                 self.save_notes()
             case "2":
                 self.import_notes()
+            case "10":
+                self.start()
         input("↩")
         self.clr_scr()
+        self.notes_exim()
 
     def clr_scr(self):
         system_name = platform.system()
@@ -91,8 +87,7 @@ class Notebook:
             os.system("clear")
 
     def show_notes_full(self):
-        width = [3, None, None, 10, 10]
-        self.menu.list_notes_view(self.notes, width)
+        self.menu.list_notes_view(self.dict_convert(self.notesobj), "full")
 
     def show_notes_brief(self, notes_list):
         newnoteslist = copy.deepcopy(notes_list)
@@ -101,20 +96,15 @@ class Notebook:
         self.menu.list_notes_view(newnoteslist)
 
     def show_note(self):
-        found_list_dict, found_list_obj = self.search_context()
+        found_list_obj = self.search_context()
         self.menu.show_note_view(found_list_obj)
 
     def add_note(self):
         self.n += 1
         hr, txt = self.menu.note_add_view()
-        # self.notes.append((self.n, str(Note(hr, txt))))
         obj = Note(hr, txt)
         obj.id = self.n
-        y = json.dumps(obj, cls=self.TestEncoder, ensure_ascii=False, indent=2)
-        i = json.loads(y)
-        self.notes.append(i)
         self.notesobj.append(obj)
-        self.dict["notebook"] = self.notes
         self.menu.confirm_msg_view()
 
     def sort_key(self, obj: dict, argument_key: str):
@@ -122,26 +112,24 @@ class Notebook:
 
     def sort_objs(self):
         while True:
-            # choice = self.menu.show_sort_choice_view()
             choice = self.menu.show_menu_view(self.menu.notes_sort_Menu)
-            # if choice == "10": break
+            if choice == "10":
+                break
             key = self.menu.notes_sort_Menu[choice] + ":"
-            sort_list = sorted(self.notes, key=lambda note: self.sort_key(note, key))
-            self.menu.list_notes_view(sort_list)
+            sort_list = sorted(self.dict_convert(self.notesobj), key=lambda note: self.sort_key(note, key))
+            self.menu.list_notes_view(sort_list, "full")
 
     def save_notes(self):
         newlist = []
-
         with open("notes11.json", "w", encoding='utf8') as file:
             for obj in self.notesobj:
-                somevar = json.dumps(obj, cls=self.TestEncoder, ensure_ascii=False, indent=2)
-                print("try save from dumps - ", somevar)
-                newlist.append(somevar)
-            self.dict["notebook"] = newlist
-            json.dump(self.dict, file, ensure_ascii=False, indent=2)
+                somevar = json.dumps(obj, cls=self.Encoder, ensure_ascii=False, indent=3)
+                someloadsobj = json.loads(somevar)
+                newlist.append(someloadsobj)
+            json.dump(newlist, file, ensure_ascii=False, indent=3)
         self.menu.confirm_msg_view()
 
-    class TestEncoder(json.JSONEncoder):
+    class Encoder(json.JSONEncoder):
         def default(self, nt):
             return {"ID:": nt.id,
                     "Название заметки:": nt.header,
@@ -152,92 +140,97 @@ class Notebook:
 
     def import_notes(self):
         self.note_objs = []
-        self.notes = []
+        # self.notes = []
         with open("notes11.json", "r", encoding='utf8') as file:
             data = json.load(file)
-            # y = json.loads()
             self.n = 0
-            for i in data['notebook']:
-                self.n += 1
-                y = json.loads(i)
+            for i in data:
                 nt = Note("", "")
-                nt.id = y["ID:"]
-                nt.header = y["Название заметки:"]
-                nt.text = y["Текст заметки:"]
-                nt.created = y["Время создания:"]
-                nt.last_updated = y["Время изменения:"]
+                nt.id = i["ID:"]
+                nt.header = i["Название заметки:"]
+                nt.text = i["Текст заметки:"]
+                nt.created = i["Время создания:"]
+                nt.last_updated = i["Время изменения:"]
                 self.notesobj.append(nt)
-                self.notes.append(y)
+                # self.notes.append(i)
+            self.n = self.notesobj[-1].id
         self.menu.confirm_msg_view()
 
-        # note_substring = input("Выберите ID заметки для просмотра: ")
+    def dict_convert(self, obj_list):
+        new_dict_list = []
+        dict_note = {}
+        for note in obj_list:
+            dict_note["ID:"] = note.id
+            dict_note["Название заметки:"] = note.header
+            dict_note["Текст заметки:"] = note.text
+            dict_note["Время создания:"] = note.created
+            dict_note["Время изменения:"] = note.last_updated
+            new_dict_list.append(dict_note)
+            dict_note = {}
+        return new_dict_list
 
     def edit_note(self):
-        # note_substring = input("Введите первые буквы заголовка заметки, которую нужно редактировать: ")
-        found_list_dict, found_list_obj = self.search_context()
-        if found_list_dict:
-            note = ""
-            if len(found_list_obj) == 1:
-                note = found_list_obj[0]
-
-            else:
-                id_input = input("Введите ID заметки для редактирования: ")
-                # for note_dict in found_list_dict:
-                for item in found_list_obj:
-                    # if note_dict.get("ID:") == int(id_input):
-                    if item.id == int(id_input):
-                        print("Текущая заметка: ")
-                        width = [3, None, None, 10, 10]
-                        note = item
-                        break
-                    # self.menu.list_notes_view(list(note_dict), width)
-            index = self.notesobj.index(note)
-
-            self.menu.show_note_view(note)
-            new_header = input("Введите новый заголовок заметки. Чтобы заголовок оставить прежним, нажмите 'Enter'")
+        note = self.choose_from_foundlist("для редактирования: ")
+        if note:
+            new_header = input("Введите новый заголовок заметки. Чтобы заголовок оставить прежним, нажмите 'Enter'. \n>")
             if new_header:
-                self.notes[index]["Название заметки"] = new_header
                 note.header = new_header
-
-            print("Введите новый текст заметки. Если нужно текст оставить прежним, нажмите 'Enter'. \
-            Для окончания ввода наберите 10 на новой строке")
+            choice = input("Если нужно текст оставить прежним, нажмите 'Enter' \ "
+"Чnобы добавить текст к существующей заметке нажмите 1, заменить текст 2. Для окончания ввода наберите 10 на новой строке \n>")
             new_text = ""
+            if choice == "1":
+                new_text = note.text + " "
             while True:
-                inp = input()
+                inp = input(">")
                 if inp == "10" or inp == "":
                     break
                 new_text = new_text + inp + "\n"
             if new_text:
-                self.notes[index]["Текст заметки:"] = new_text
                 note.text = new_text
             print(f"Заметка успешно отредактирована!")
 
     def search_context(self):
         note_substring = input("Введите первые буквы заголовка заметки: ")
         match = -1
-        k = 0
-        found_list = []
         found_list_obj = []
-        for item in self.notes:
-            note_obj = self.notesobj[self.notes.index(item)]
-            poisk = item["Название заметки:"].lower()
-            match = poisk.find(note_substring.lower())
+        for note in self.notesobj:
+            match = note.header.lower().find(note_substring.lower())
             if match != -1:
-                k += 1
-                found_list.append(item)
-                found_list_obj.append(note_obj)
-                # print("FOUND!!! ", k)
-                # width = [3, None, None, 10, 10]
-                # self.menu.list_notes_view(found_list, width)
-        if found_list:
-            print(f"Найдено записей {len(found_list)} ")
-            # width = [3, None, None, 10, 10]
-            self.show_notes_brief(found_list)  # , width)
-            return found_list, found_list_obj
+                found_list_obj.append(note)
+        if found_list_obj:
+            print(f"Найдено записей {len(found_list_obj)} ")
+            self.show_notes_brief(self.dict_convert(found_list_obj))
+            return found_list_obj
         else:
-            print("Строка не найдена")
-            return "", ""
+            print("Заметка не найдена")
+            return ""
+
+    def choose_from_foundlist(self, call=""):
+        found_list_obj = self.search_context()
+        if found_list_obj:
+            note = ""
+            if len(found_list_obj) == 1:
+                note = found_list_obj[0]
+            else:
+                id_input = input("Введите ID заметки " + call)
+                for item in found_list_obj:
+                    if item.id == int(id_input):
+                        print()
+                        print("Текущая заметка: ")
+                        print()
+                        note = item
+                        break
+                if not note:
+                    print("Неверный ввод")
+            self.menu.show_note_view(note)
+            return note
 
     def delete_note(self):
-
-        pass
+        note = self.choose_from_foundlist("для удаления: ")
+        if note:
+            confirm = input("!!! Подтвердите удаление 1- да, 2 - нет")
+            if confirm == "1":
+                self.notesobj.remove(note)
+                self.menu.confirm_msg_view()
+            else:
+                self.menu.non_confirm_msg_view()

@@ -1,22 +1,13 @@
 import datetime
 
 class Note:
-    # note = {}
 
     def __init__(self, title: str, text: str):
         self.__id = 0
         self.__header = title
         self.__text = text
         self.__created = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.__last_updated = self.created
-        # self.__note = {"Название заметки:": self.__header,
-        #              "Текст заметки:": self.__text,
-        #              "Время создания:": self.__created,
-        #              "Время изменения:": self.__last_updated
-        #              }
-
-    # def __repr__(self):
-    #     return self.__id, self.__header, self.__text, self.__created, self.__last_updated
+        self.__last_updated = self.__created
 
     @property
     def id(self):
@@ -60,20 +51,9 @@ class Note:
         self.__text = value
         self.last_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    @property
-    def note(self):
-        return self.__note
-
 
     def __str__(self):
-        return f"ID:{self.id} \n Название заметки:{self.header} \n \
-Текст заметки: \n {self.text}\n \
-Дата создания: {self.created}\n \
-Дата изменения: {self.last_updated}\n "
-
- # txt = ""
-        # for k,v in self.note.items():
-        #     txt = txt + k + ": " + v + "\n"
-        #
-        # return txt
-        # return str(self.note)
+        return f"ID:{self.id} \n Название заметки:  '{self.header}' \n \
+Текст заметки:\n\n' {self.text}'\n \
+Дата создания: '{self.created}'\n \
+Дата изменения: '{self.last_updated}'\n "
