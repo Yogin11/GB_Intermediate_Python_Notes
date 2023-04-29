@@ -9,9 +9,17 @@ class Note:
         self.__created = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.__last_updated = self.__created
 
+
+    def all_atribs_names(self):
+        return ["ID", "Название заметки", "Текст заметки", "Время создания", "Время изменения"]
+
+    def all_atrib_values(self):
+        return [self.id, self.header, self.text, self.created, self.last_updated]
+
     @property
     def id(self):
         return self.__id
+
 
     @id.setter
     def id(self,value):

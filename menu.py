@@ -1,15 +1,26 @@
 from tabulate import *
+from note import Note
 
-# from note import Note
 
 class Menu:
     main_Menu = {
         "0": "Главное Меню:",
-        "1": "Просмотр заметок: показать, сортировать",
-        "2": "Действия с заметками: Добавить, изменить, удалить",
-        "3": "Импорт/экспорт заметок в файл",
+        "1": "Найти и показать заметку",
+        "2": "Добавить заметку",
+        "3": "Изменить заметку",
+        "4": "Удалить заметку",
+        "5": "Просмотр заметок",
+        "6": "Импорт/экспорт заметок в файл",
         "10": "Выход"
+
     }
+    notes_exim_Menu = {
+        "0": "Сохранение/Загрузка заметок:",
+        "1": "Сохранить заметки в Json файл",
+        "2": "Загрузить заметки из Json файла",
+        "10": "Вернуться в основное меню"
+    }
+
     notes_sort_Menu = {
         "0": "Критерии сортировки заметок:",
         "1": "ID",
@@ -24,21 +35,6 @@ class Menu:
         "1": "Показать список заметок",
         "2": "Показать все заметки c содержимым",
         "3": "Сортировать заметки",
-        "4": "Найти и показать заметку",
-        "10": "Вернуться в основное меню"
-    }
-    notes_action_Menu = {
-        "0": "Действия с заметками:",
-        "1": "Добавить заметку",
-        "2": "Изменить заметку",
-        "3": "Удалить заметку",
-        "10": "Вернуться в основное меню"
-
-    }
-    notes_exim_Menu = {
-        "0": "Сохранение/Загрузка заметок:",
-        "1": "Сохранить заметки в Json файл",
-        "2": "Загрузить заметки из Json файла",
         "10": "Вернуться в основное меню"
     }
 
@@ -52,22 +48,11 @@ class Menu:
             choice = input("Выберите пункт: ")
             if choice in obj and choice != "0":
                 return choice
-
             else:
                 print("Неправильный ввод. Попробуйте еще раз.")
 
-    def show_note_view(self, obj_list):
-        if isinstance(obj_list, list):
-            note = obj_list[0]
-            if len(obj_list) > 1:
-                choice = input("Выберите ID заметки: ")
-                for obj in obj_list:
-                    if obj.id == choice:
-                        note = obj
-                        break
-        else:
-            note = obj_list
-        print(str(note))
+    def show_note_view(self, obj: Note):
+        print(str(obj))
 
     def note_add_view(self):
         hr = input("Введите заголовок: ")
@@ -81,15 +66,42 @@ class Menu:
             txt = txt + inp + "\n"
         return hr, txt
 
-    def list_notes_view(self, listnotes: list, var=""):
-
+    def list_notes_view(self, objects: list, var=""):
+        listnotes = self.conv_to_list(objects, var)
+        ncl = Note("", "")
+        newheaders = ncl.all_atribs_names()
+        # headers = "keys"
         if var == "full":
-            width = [3, None, None, 10, 10]
+            width = [3, 20, 70, 10, 10]
         else:
-            width = [3, None, 10, 10]
+            newheaders.pop(2)
+            width = [3, 20, 20, 20]
         if listnotes:
-            print(tabulate(listnotes, headers="keys", tablefmt="heavy_grid", colalign=("center","left","left",),
+            print(tabulate(listnotes, headers=newheaders, tablefmt="heavy_grid", colalign=("center", "left", "left",),
                            maxcolwidths=width))  # or grid or pretty
+
+    def conv_to_list(self, obj_list, columns="full"):
+        newlistlist = []
+        if columns == "full":
+            for note in obj_list:
+                newlistlist.append([note.id, note.header, note.text, note.created, note.last_updated])
+        else:
+            for note in obj_list:
+                newlistlist.append([note.id, note.header, note.created, note.last_updated])
+        return newlistlist
+
+    def sort_key(self, obj: Note, argument_key: str):
+        index = obj.all_atribs_names().index(argument_key)
+        return obj.all_atrib_values()[index]
+
+    def sort_objs_view(self, obj_to_sort):
+        while True:
+            choice = self.show_menu_view(self.notes_sort_Menu)
+            if choice == "10":
+                break
+            key = self.notes_sort_Menu[choice]
+            sort_list = sorted(obj_to_sort, key=lambda note: self.sort_key(note, key))
+            self.list_notes_view(sort_list, "full")
 
     def confirm_msg_view(self):
         print("Операция выполнена успешно!")
