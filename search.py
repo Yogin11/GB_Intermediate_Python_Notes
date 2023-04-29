@@ -4,12 +4,16 @@ from menu import *
 class Search:
 
     def search_context(self, data):
-        note_substring = input("Введите первые буквы заголовка заметки: ")
-        match = -1
+        note_substring = input("Введите набор символов для поиска в заголовках и текстах заметок: ")
+        match1 = -1
+        match2 = -1
         found_list_obj = []
         for note in data:
-            match = note.header.lower().find(note_substring.lower())
-            if match != -1:
+
+            match1 = note.header.lower().find(note_substring.lower())
+            match2 = note.text.lower().find(note_substring.lower())
+
+            if match1 != -1 or match2 != -1:
                 found_list_obj.append(note)
         return found_list_obj
 
